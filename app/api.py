@@ -5,7 +5,16 @@ from __future__ import annotations
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.schemas import AuditRequest, NegotiationAudit, ParseRequest, DealerWorksheet
+from app.schemas import (
+    AuditRequest,
+    DiscoverRequest,
+    DiscoverResponse,
+    InventoryListingModel,
+    NegotiationAudit,
+    ParseRequest,
+    DealerWorksheet,
+)
+from core.discovery import DiscoveryQuery, junk_fee_radar_tips, search_inventory
 from core.guardrail_clamper import run_full_audit
 from core.parser import ParserUnavailableError, parse_worksheet
 
@@ -56,3 +65,31 @@ def parse(request: ParseRequest) -> DealerWorksheet:
 def parse_and_audit(request: ParseRequest) -> NegotiationAudit:
     worksheet = parse(request)
     return run_full_audit(worksheet)
+
+
+@app.post("/discover", response_model=DiscoverResponse)
+def discover(request: DiscoverRequest) -> DiscoverResponse:
+    """Live web-search inventory discovery (DuckDuckGo by default; no API key)."""
+    result = search_inventory(
+        DiscoveryQuery(
+            zip_code=request.zip_code,
+            year=request.year,
+            make=request.make,
+            model=request.model,
+            trim=request.trim,
+            condition=request.condition,
+            dealer_name=request.dealer_name,
+            budget_otd=request.budget_otd,
+            state=request.state,
+            max_results=request.max_results,
+        )
+    )
+    tips = junk_fee_radar_tips(request.make, request.state) if result.listings else []
+    return DiscoverResponse(
+        search_query=result.search_query,
+        provider=result.provider,
+        listings=[InventoryListingModel.model_validate(item.__dict__) for item in result.listings],
+        competitor_suggestions=result.competitor_suggestions,
+        junk_fee_tips=tips,
+        notes=result.notes,
+    )

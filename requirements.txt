@@ -4,6 +4,9 @@ pydantic>=2.9.0
 rapidfuzz>=3.10.0
 streamlit>=1.40.0
 httpx>=0.27.0
+ddgs>=9.0.0
 pytest>=8.3.0
 # Optional multimodal parser (stub used when unset / not installed):
 # google-generativeai>=0.8.0
+# Optional keyed search providers (not required — DuckDuckGo is the default):
+# TAVILY_API_KEY / BRAVE_API_KEY / SERPAPI_API_KEY reserved for future backends.

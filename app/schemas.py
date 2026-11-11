@@ -88,3 +88,53 @@ class ParseRequest(BaseModel):
     image_base64: Optional[str] = None
     text_blob: Optional[str] = None
     state_hint: Optional[str] = None
+
+
+class DiscoverRequest(BaseModel):
+    """Guided discovery search for nearby dealer inventory."""
+
+    zip_code: str = Field(..., min_length=3, max_length=16)
+    year: Optional[int] = Field(None, ge=1980, le=2100)
+    make: str = ""
+    model: str = ""
+    trim: str = ""
+    condition: str = Field("new", description="new | used | any")
+    dealer_name: str = ""
+    budget_otd: Optional[float] = Field(None, gt=0)
+    state: str = Field("", max_length=2)
+    max_results: int = Field(8, ge=1, le=20)
+
+    @field_validator("state")
+    @classmethod
+    def _upper_state_optional(cls, value: str) -> str:
+        return (value or "").strip().upper()
+
+    @field_validator("condition")
+    @classmethod
+    def _normalize_condition(cls, value: str) -> str:
+        cleaned = (value or "new").strip().lower()
+        if cleaned not in {"new", "used", "any"}:
+            raise ValueError("condition must be new, used, or any")
+        return cleaned
+
+
+class InventoryListingModel(BaseModel):
+    title: str
+    url: str
+    snippet: str = ""
+    price: Optional[float] = None
+    dealer_name: Optional[str] = None
+    days_listed: Optional[int] = None
+    stock_number: Optional[str] = None
+    vin: Optional[str] = None
+    score: float = 0.0
+    source: str = "duckduckgo"
+
+
+class DiscoverResponse(BaseModel):
+    search_query: str
+    provider: str
+    listings: List[InventoryListingModel] = Field(default_factory=list)
+    competitor_suggestions: List[str] = Field(default_factory=list)
+    junk_fee_tips: List[str] = Field(default_factory=list)
+    notes: List[str] = Field(default_factory=list)
