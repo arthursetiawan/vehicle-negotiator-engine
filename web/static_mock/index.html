@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>YourNextCar — Guided Discovery (static mock)</title>
+  <meta name="description" content="Static mock of the YourNextCar guided dealer + car discovery flow for github.io preview." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="atmosphere" aria-hidden="true"></div>
+  <main class="shell">
+    <header class="hero">
+      <p class="eyebrow">Static mock · mirrors Streamlit guided flow</p>
+      <h1 class="brand">YourNextCar</h1>
+      <p class="lede">Find the dealer. Lock the car. Counter with a clean Out-The-Door.</p>
+    </header>
+
+    <nav class="steps" aria-label="Guided steps">
+      <button type="button" class="step is-active" data-step="0" aria-current="step">1. Where</button>
+      <button type="button" class="step" data-step="1">2. What</button>
+      <button type="button" class="step" data-step="2">3. Find</button>
+      <button type="button" class="step" data-step="3">4. Negotiate</button>
+    </nav>
+
+    <section class="panel" id="panel-0" data-panel="0">
+      <p class="step-label">Step 1 — Where</p>
+      <h2>Which dealer world are we shopping?</h2>
+      <p class="support">ZIP or metro first. Name a store if you already have one — or shop any nearby franchise.</p>
+      <form class="grid" id="form-where">
+        <label>ZIP / metro
+          <input id="zip" name="zip" value="94107" required />
+        </label>
+        <label>State
+          <select id="state" name="state">
+            <option>CA</option>
+            <option>WA</option>
+            <option>TX</option>
+            <option>FL</option>
+            <option>VA</option>
+          </select>
+        </label>
+        <label class="span-2 check">
+          <input type="checkbox" id="anyFranchise" checked />
+          Any nearby franchise for this brand
+        </label>
+        <label class="span-2">Dealer name (optional)
+          <input id="dealer" name="dealer" placeholder="Toyota of Downtown" disabled />
+        </label>
+      </form>
+      <div class="actions">
+        <button type="button" class="primary" data-next="1">Continue to car interest →</button>
+      </div>
+    </section>
+
+    <section class="panel is-hidden" id="panel-1" data-panel="1" hidden>
+      <p class="step-label">Step 2 — What</p>
+      <h2>What are you trying to buy?</h2>
+      <p class="support">Year, make, model, trim. Optional OTD ceiling keeps the search honest.</p>
+      <form class="grid" id="form-what">
+        <label>Year <input id="year" type="number" value="2025" /></label>
+        <label>Make <input id="make" value="Toyota" /></label>
+        <label>Model <input id="model" value="Camry" /></label>
+        <label>Trim <input id="trim" value="SE" /></label>
+        <label>Condition
+          <select id="condition">
+            <option>new</option>
+            <option>used</option>
+            <option>any</option>
+          </select>
+        </label>
+        <label>Budget OTD ceiling
+          <input id="budget" type="number" value="38000" step="500" />
+        </label>
+        <label class="span-2">Must-haves
+          <input id="musts" value="No market adjustment, remote close" />
+        </label>
+      </form>
+      <div class="actions">
+        <button type="button" class="ghost" data-next="0">← Back</button>
+        <button type="button" class="primary" data-next="2">Show sample inventory →</button>
+      </div>
+    </section>
+
+    <section class="panel is-hidden" id="panel-2" data-panel="2" hidden>
+      <p class="step-label">Step 3 — Find</p>
+      <h2>Sample inventory near you</h2>
+      <p class="support">Static demo listings (live Streamlit uses DuckDuckGo). Pick a target to continue.</p>
+      <p class="query" id="searchQuery"></p>
+      <div class="listings" id="listings"></div>
+      <div class="actions">
+        <button type="button" class="ghost" data-next="1">← Back to car</button>
+      </div>
+    </section>
+
+    <section class="panel is-hidden" id="panel-3" data-panel="3" hidden>
+      <p class="step-label">Step 4 — Negotiate</p>
+      <h2>Cold outreach counter script</h2>
+      <p class="support" id="targetSummary">Pick a listing first.</p>
+      <div class="tips" id="tips"></div>
+      <h3>Anti-deflection email</h3>
+      <pre class="script" id="script"></pre>
+      <h3>Request OTD Buyer's Order</h3>
+      <pre class="script" id="otdDraft"></pre>
+      <div class="actions">
+        <button type="button" class="ghost" data-next="2">← Back to Find</button>
+        <button type="button" class="primary" id="restart">Start over</button>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p>Self-contained mock for <code>arthursetiawan.github.io</code> mirroring. Live engine: Streamlit + <code>core/discovery.py</code>.</p>
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
